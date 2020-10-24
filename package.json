@@ -1,0 +1,34 @@
+{
+  "name": "arweaveid-contract",
+  "version": "1.0.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArweaveID/contract.git"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run build-ts && npm run cp",
+    "build-ts": "node build.js",
+    "clean": "rimraf ./dist",
+    "cp": "copyfiles -u 1 ./src/**/*.json dist",
+    "test": "jest src/__tests__/contract.spec.ts"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
+  },
+  "dependencies": {
+    "smartweave": "https://arweave.net/AM-u4X2po-3Tx7fma3lRonCfLwrjI42IALwDL_YFXBs"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.7",
+    "copyfiles": "^2.3.0",
+    "esbuild": "^0.6.8",
+    "glob": "^7.1.6",
+    "jest": "^26.1.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.1.3",
+    "typescript": "^3.9.7",
+    "typescript.api": "^0.7.7"
+  }
+}

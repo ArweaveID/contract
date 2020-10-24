@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "lib": ["es6"],
+    "esModuleInterop": true,
+    "downlevelIteration": true
+  }
+}
