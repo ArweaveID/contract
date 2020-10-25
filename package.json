@@ -18,10 +18,11 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "smartweave": "https://arweave.net/AM-u4X2po-3Tx7fma3lRonCfLwrjI42IALwDL_YFXBs"
+    "smartweave": "^0.4.0"
   },
   "devDependencies": {
     "@types/jest": "^26.0.7",
+    "arweave": "^1.9.1",
     "copyfiles": "^2.3.0",
     "esbuild": "^0.6.8",
     "glob": "^7.1.6",

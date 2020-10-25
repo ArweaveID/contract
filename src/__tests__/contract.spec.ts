@@ -1,6 +1,6 @@
-require("typescript.api").register();
+// require("typescript.api").register();
 
-import Arweave from 'arweave/node';
+import Arweave from 'arweave';
 import * as fs from 'fs';
 import { createContractExecutionEnvironment } from './swglobal/contract-load';
 

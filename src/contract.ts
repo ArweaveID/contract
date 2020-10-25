@@ -61,6 +61,10 @@ export function handle(state: StateInterface, action: ActionInterface) {
       extras = Array.from(extrasMap);
     }
 
+    if(username.length == 0) {
+      throw new ContractError('No username provided.')
+    }
+
     if(request === 'account') {
       if(username && acc.username !== username && (input.username in takenNames)) {
         throw new ContractError('Username already taken.');
