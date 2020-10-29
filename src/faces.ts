@@ -4,7 +4,7 @@ export interface StateInterface {
 }
 
 export interface AccountInterface {
-  username?: string;
+  name?: string;
   avatar?: string;
   bio?: string;
   url?: string;
@@ -22,12 +22,16 @@ export interface ResultInterface extends AccountInterface {
   extra?: string;
 }
 
-export interface InputInterface extends AccountInterface {
+export interface InputInterface {
   function: 'get' | 'set';
   request: RequestType;
   target?: string;
+  name?: string;
+  avatar?: string;
+  bio?: string;
+  url?: string;
   key?: string;
-  value?: string;
+  extras?: {[key: string]: string};
 }
 
-export type RequestType = 'account' | 'username' | 'avatar' | 'bio' | 'url' | 'extra';
+export type RequestType = 'account' | 'name' | 'avatar' | 'bio' | 'url' | 'extra';

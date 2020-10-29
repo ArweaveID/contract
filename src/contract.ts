@@ -21,8 +21,8 @@ export function handle(state: StateInterface, action: ActionInterface) {
     if(request === 'account') {
       res.result.account = accounts[target];
     }
-    else if(request === 'username') {
-      res.result.username = accounts[target].username;
+    else if(request === 'name') {
+      res.result.name = accounts[target].name;
     }
     else if(request === 'avatar') {
       res.result.avatar = accounts[target].avatar;
@@ -33,7 +33,7 @@ export function handle(state: StateInterface, action: ActionInterface) {
     else if(request === 'url') {
       res.result.url = accounts[target].url;
     }
-    else if(request.length) {
+    else if(request === 'extra') {
       res.result.extra = (new Map(accounts[target].extras || [])).get(input.key);
     } else {
       throw new ContractError('Invalid request.');
@@ -46,52 +46,56 @@ export function handle(state: StateInterface, action: ActionInterface) {
   if(input.function === 'set') {
     let acc = createAccountIfNotExists();
     
-    let username: string = clean(input.username || acc.username);
+    let name: string = clean(input.name || acc.name);
     let avatar: string = validateTxId(clean(input.avatar || acc.avatar));
     let bio: string = clean(input.bio || acc.bio);
     let url: string = clean(input.url || acc.url);
     let extras: [string, string][] = acc.extras;
-    
-    let key: string = clean(input.key || '');
-    let value: string = clean(input.value || '');
+    let kvs: {[key: string]: string} = input.extras || {};
 
-    if(key.length && value.length) {
+    if(Object.keys(kvs).length) {
       const extrasMap = new Map(extras);
-      extrasMap.set(key, value);
+      for(const kv in kvs) {
+        const k = clean(kv);
+        const v = clean(kvs[kv]);
+
+        if(k.length && v.length) {
+          extrasMap.set(k, v);
+        }
+      }
       extras = Array.from(extrasMap);
     }
 
-    if(username.length == 0) {
-      throw new ContractError('No username provided.')
+    if(name.length == 0) {
+      throw new ContractError('No name provided.')
     }
 
     if(request === 'account') {
-      if(username && acc.username !== username && (input.username in takenNames)) {
-        throw new ContractError('Username already taken.');
+      if(name && acc.name !== name && (input.name in takenNames)) {
+        throw new ContractError('Name already taken.');
       }
 
-      if(acc.username !== username) {
-        takenNames.splice(takenNames.indexOf(acc.username), 1);
-        takenNames.push(username);
+      if(acc.name !== name) {
+        takenNames.splice(takenNames.indexOf(acc.name), 1);
+        takenNames.push(name);
       }
 
-      acc = { username, avatar, bio, url, extras };
+      acc = { name, avatar, bio, url, extras };
       accounts[caller] = acc;
 
-    } else if(request === 'username') {
-      if(input.username in takenNames) {
-        throw new ContractError('Username already taken.');
+    } else if(request === 'name') {
+      if(input.name in takenNames) {
+        throw new ContractError('Name already taken.');
       }
 
-      if(acc.username !== username) {
-        takenNames.splice(takenNames.indexOf(acc.username), 1);
-        takenNames.push(username);
+      if(acc.name !== name) {
+        takenNames.splice(takenNames.indexOf(acc.name), 1);
+        takenNames.push(name);
       }
-      acc.username = username;
+      accounts[caller].name = name;
 
     } else if(request === 'avatar') {
       accounts[caller].avatar = avatar;
-    
     } else if(request === 'bio') {
       accounts[caller].bio = bio;
     } else if(request === 'url') {
@@ -108,6 +112,8 @@ export function handle(state: StateInterface, action: ActionInterface) {
   }
 
   function validateTxId(str: string) {
+    if(!str.length) return str;
+
     if(!/[a-z0-9_-]{43}/i.test(str)) {
       throw new ContractError(`${str} is not a transaction ID.`);
     }
@@ -117,7 +123,7 @@ export function handle(state: StateInterface, action: ActionInterface) {
   function createAccountIfNotExists() {
     if(!(caller in accounts)) {
       accounts[caller] = {
-        username: '',
+        name: '',
         avatar: '',
         bio: '',
         url: '',
